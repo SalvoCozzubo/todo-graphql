@@ -2,7 +2,9 @@ import React, { useReducer } from 'react';
 import AddTodoForm from './AddTodoForm';
 import ListTodoView from './ListTodo';
 import ListTodoQuery from './queries/ListTodo';
-import { graphql } from 'react-apollo'
+import CreateTodoMutation from './queries/CreateTodo';
+import { graphql, compose } from 'react-apollo'
+import { graphqlMutation } from 'aws-appsync-react'
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -15,24 +17,27 @@ const reducer = (state, action) => {
   }
 };
 
-const App = ({todos}) => {
+const App = ({ todos, createTodo }) => {
   const [state, dispatch] = useReducer(reducer, { todos });
+  console.log('props', createTodo);
 
-  console.log('props', todos);
   return (
     <>
       <h1>TODO</h1>
-      <AddTodoForm dispatch={dispatch} />
+      <AddTodoForm dispatch={dispatch} createTodo={createTodo} />
       <ListTodoView todos={state.todos} />
     </>
   );
 }
 
-export default graphql(ListTodoQuery, {
-  options: {
-    fetchPolicy: 'cache-and-network',
-  },
-  props: props => ({
-    todos: props.data.listTodos ? props.data.listTodos.items : [],
-  })
-})(App);
+export default compose(
+  graphql(ListTodoQuery, {
+    options: {
+      fetchPolicy: 'cache-and-network',
+    },
+    props: props => ({
+      todos: props.data.listTodos ? props.data.listTodos.items : [],
+    })
+  }),
+  graphqlMutation(CreateTodoMutation, ListTodoQuery, 'Todo'))
+  (App);

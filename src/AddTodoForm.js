@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-const AddTodoForm = (props) => {
+const AddTodoForm = ({ dispatch, createTodo }) => {
   const [formState, setFormState] = useState('');
   
   const addTodo = async () => {
     // use props for update list todos
-    props.dispatch({
+    const todo = { todo: formState };
+    
+    const result = await createTodo({ createtodoinput: todo });
+
+    const todoServer = result.data.createTodo;
+    console.log('result', result);
+
+    dispatch({
       type: 'ADD',
-      payload: {
-        todo: formState, id: uuidv4()
-      }
+      payload: todoServer,
     });
     
     setFormState(''); // reset the state

@@ -1,12 +1,12 @@
 import gql from 'graphql-tag';
 
-const CreateTodo = gql`
-  mutation createPost($input: CreateTodoInput!) {
-    createPost(input: $input) {
+const CreateTodoMutation = gql`
+  mutation createTodo($createtodoinput: CreateTodoInput!) {
+    createTodo(input: $createtodoinput) {
       id
       todo
     }
   }
 `;
 
-export default CreateTodo;
+export default CreateTodoMutation;
