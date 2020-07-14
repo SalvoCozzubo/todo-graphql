@@ -5,9 +5,7 @@ const AddTodoForm = ({ dispatch, createTodo }) => {
   
   const addTodo = async () => {
     // use props for update list todos
-    const todo = { todo: formState };
-    
-    const result = await createTodo({ createtodoinput: todo });
+    const result = await createTodo({ todo: formState });
 
     const todoServer = result.data.createTodo;
     console.log('result', result);

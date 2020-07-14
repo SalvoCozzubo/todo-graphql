@@ -1,7 +1,6 @@
 import React from 'react';
 
 const ListTodoView = (props) => {
-  console.log('ListTodo', props);
   return (
     <div>
       {

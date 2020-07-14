@@ -1,25 +1,42 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import AddTodoForm from './AddTodoForm';
 import ListTodoView from './ListTodo';
 import ListTodoQuery from './queries/ListTodo';
 import CreateTodoMutation from './queries/CreateTodo';
-import { graphql, compose } from 'react-apollo'
-import { graphqlMutation } from 'aws-appsync-react'
+import { API, graphqlOperation } from 'aws-amplify';
 
 const reducer = (state, action) => {
+  const { payload } = action;
   switch (action.type) {
     case 'ADD':
-      const { payload } = action;
+      // TODO: stare attenti alle copie
       state.todos = [...state.todos, payload];
+      return { ...state };
+    case 'LOAD':
+      state.todos = [...payload];
       return { ...state };
     default:
       return { ...state };
   }
 };
 
-const App = ({ todos, createTodo }) => {
-  const [state, dispatch] = useReducer(reducer, { todos });
-  console.log('props', createTodo);
+const App = () => {
+  const [state, dispatch] = useReducer(reducer, { todos: [] });
+
+  const createTodo = async (todo) => {
+    return await API.graphql(
+      graphqlOperation(CreateTodoMutation, { createtodoinput: todo }));
+  };
+
+  useEffect(() => { 
+    const listTodo = async () => {
+      const todosRaw = await API.graphql(graphqlOperation(ListTodoQuery));
+      const todos = todosRaw.data.listTodos ? todosRaw.data.listTodos.items : [];
+      dispatch({ type: 'LOAD', payload: todos });
+    };
+    
+    listTodo();
+  }, []);
 
   return (
     <>
@@ -30,14 +47,4 @@ const App = ({ todos, createTodo }) => {
   );
 }
 
-export default compose(
-  graphql(ListTodoQuery, {
-    options: {
-      fetchPolicy: 'cache-and-network',
-    },
-    props: props => ({
-      todos: props.data.listTodos ? props.data.listTodos.items : [],
-    })
-  }),
-  graphqlMutation(CreateTodoMutation, ListTodoQuery, 'Todo'))
-  (App);
+export default App;
