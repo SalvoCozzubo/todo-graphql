@@ -1,12 +1,13 @@
 import React, { useReducer } from 'react';
 import AddTodoForm from './AddTodoForm';
-import ListTodo from './ListTodo';
+import ListTodoView from './ListTodo';
+import ListTodoQuery from './queries/ListTodo';
+import { graphql } from 'react-apollo'
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'ADD':
       const { payload } = action;
-      console.log('payload', payload);
       state.todos = [...state.todos, payload];
       return { ...state };
     default:
@@ -14,17 +15,24 @@ const reducer = (state, action) => {
   }
 };
 
-const App = () => {
-  const [state, dispatch] = useReducer(reducer, { todos: [] });
+const App = ({todos}) => {
+  const [state, dispatch] = useReducer(reducer, { todos });
 
-  console.log('state', state);
+  console.log('props', todos);
   return (
     <>
       <h1>TODO</h1>
       <AddTodoForm dispatch={dispatch} />
-      <ListTodo todos={state.todos} />
+      <ListTodoView todos={state.todos} />
     </>
   );
 }
 
-export default App;
+export default graphql(ListTodoQuery, {
+  options: {
+    fetchPolicy: 'cache-and-network',
+  },
+  props: props => ({
+    todos: props.data.listTodos ? props.data.listTodos.items : [],
+  })
+})(App);

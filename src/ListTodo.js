@@ -1,16 +1,16 @@
 import React from 'react';
 
-const ListTodo = (props) => {
+const ListTodoView = (props) => {
   console.log('ListTodo', props);
   return (
     <div>
       {
-        props.todos.map((item, index) => (
-          <div key={index}>{item}</div>
+        props.todos.map((item) => (
+          <div key={item.id}>{item.todo}</div>
         ))
       }
     </div>
   )
 };
 
-export default ListTodo;
+export default ListTodoView;
