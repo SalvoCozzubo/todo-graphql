@@ -67,4 +67,6 @@ Outputs:
     Value: !Ref AWS::Region
   AuthType:
     Value: API_KEY
+  Version:
+    Value: 1
         
