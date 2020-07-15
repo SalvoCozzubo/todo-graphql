@@ -1,0 +1,70 @@
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  TodoDynamoDb:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+  TodoDataSource:
+    Type: AWS::AppSync::DataSource
+    Properties:
+      ApiId: !GetAtt GraphQLEndpoint.ApiId
+      Type: AMAZON_DYNAMODB
+      Name: TodoDataSource
+      ServiceRoleArn: !GetAtt TodoDataSourceServiceRole.Arn
+      DynamoDBConfig:
+        AwsRegion: !Ref AWS::Region
+        TableName: !Ref TodoDynamoDb
+  GraphQLApiKey:
+    Type: AWS::AppSync::ApiKey
+    Properties:
+      ApiId: !GetAtt GraphQLEndpoint.ApiId
+  GraphQLEndpoint:
+    Type: AWS::AppSync::GraphQLApi
+    Properties:
+      AuthenticationType: API_KEY
+      Name: TodoApi
+  TodoDataSourceServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - appsync.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        -
+          PolicyName: DynamoDbWriteRead
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "dynamodb:BatchGetItem"
+                  - "dynamodb:BatchWriteItem"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:Scan"
+                  - "dynamodb:Query"
+                  - "dynamodb:UpdateItem"
+                Resource:
+                  - !GetAtt TodoDynamoDb.Arn
+                  - !Join [ "", [!GetAtt TodoDynamoDb.Arn, "/*"]]
+Outputs:
+  GraphQLUrl:
+    Value: !GetAtt GraphQLEndpoint.GraphQLUrl
+  ApiKey:
+    Value: !GetAtt GraphQLApiKey.ApiKey
+  Region:
+    Value: !Ref AWS::Region
+  AuthType:
+    Value: API_KEY
+        
