@@ -13,6 +13,7 @@ phases:
     commands:
       - npm run build
 artifacts:
+  base-directory: build
   type: zip
-  paths:
-    - './build/**/*'
+  files:
+    - '**/*'
