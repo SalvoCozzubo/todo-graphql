@@ -8,7 +8,7 @@ phases:
       - npm ci
   pre_build:
     commands:
-      - echo "const awsmobile = {\n\t\"aws_appsync_graphqlEndpoint\": \"$GRAPHQL_URL\",\n\t\"aws_appsync_region\": \"$REGION\"\n,\t\"aws_appsync_authenticationType\": \"$AUTH_TYPE\",\n\t\"aws_appsync_apiKey\": \"$API_KEY\"\n};\n\nexport default awsmobile;" > src/aws-exports.js
+      - echo "const awsmobile = {\n\t\"aws_appsync_graphqlEndpoint\": \"$GRAPHQL_URL\",\n\t\"aws_appsync_region\": \"$REGION\",\n\t\"aws_appsync_authenticationType\": \"$AUTH_TYPE\",\n\t\"aws_appsync_apiKey\": \"$API_KEY\"\n};\n\nexport default awsmobile;" > src/aws-exports.js
   build:
     commands:
       - npm run build
