@@ -91,4 +91,4 @@ Outputs:
   AuthType:
     Value: API_KEY
   Version:
-    Value: 5
+    Value: 6
