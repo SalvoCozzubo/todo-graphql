@@ -7,6 +7,29 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
+  GraphQLResolverCreateTodo:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !GetAtt GraphQLEndpoint.ApiId
+      FieldName: "createTodo"
+      TypeName: "Mutation"
+      DataSourceName: !GetAtt TodoDataSource.Name
+      ResponseMappingTemplateS3Location: ./graphql/createTodo/responseMapping.vtl
+      RequestMappingTemplateS3Location: ./graphql/createTodo/requestMapping.vtl
+  GraphQLResolverListTodo:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !GetAtt GraphQLEndpoint.ApiId
+      FieldName: "listTodos"
+      TypeName: "Query"
+      DataSourceName: !GetAtt TodoDataSource.Name
+      ResponseMappingTemplateS3Location: ./graphql/listTodos/responseMapping.vtl
+      RequestMappingTemplateS3Location: ./graphql/listTodos/requestMapping.vtl
+  GraphQLSchema:
+    Type: AWS::AppSync::GraphQLSchema
+    Properties:
+      ApiId: !GetAtt GraphQLEndpoint.ApiId
+      DefinitionS3Location: ./graphql/schema.graphql
   TodoDataSource:
     Type: AWS::AppSync::DataSource
     Properties:
@@ -69,4 +92,3 @@ Outputs:
     Value: API_KEY
   Version:
     Value: 5
-        

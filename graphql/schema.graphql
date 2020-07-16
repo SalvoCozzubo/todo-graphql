@@ -1,0 +1,105 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Mutation {
+  createTodo(input: CreateTodoInput!): Todo
+  deleteTodo(input: DeleteTodoInput!): Todo
+  updateTodo(input: UpdateTodoInput!): Todo
+}
+
+type Query {
+  getTodo(id: ID!): Todo
+  listTodos(filter: TableTodoFilterInput, limit: Int, nextToken: String): TodoConnection
+}
+
+type Subscription {
+  onCreateTodo(id: ID, todo: String): Todo @aws_subscribe(mutations : ["createTodo"])
+  onDeleteTodo(id: ID, todo: String): Todo @aws_subscribe(mutations : ["deleteTodo"])
+  onUpdateTodo(id: ID, todo: String): Todo @aws_subscribe(mutations : ["updateTodo"])
+}
+
+type Todo {
+  id: ID!
+  todo: String
+}
+
+type TodoConnection {
+  items: [Todo]
+  nextToken: String
+}
+
+input CreateTodoInput {
+  todo: String
+}
+
+input DeleteTodoInput {
+  id: ID!
+}
+
+input TableBooleanFilterInput {
+  eq: Boolean
+  ne: Boolean
+}
+
+input TableFloatFilterInput {
+  between: [Float]
+  contains: Float
+  eq: Float
+  ge: Float
+  gt: Float
+  le: Float
+  lt: Float
+  ne: Float
+  notContains: Float
+}
+
+input TableIDFilterInput {
+  beginsWith: ID
+  between: [ID]
+  contains: ID
+  eq: ID
+  ge: ID
+  gt: ID
+  le: ID
+  lt: ID
+  ne: ID
+  notContains: ID
+}
+
+input TableIntFilterInput {
+  between: [Int]
+  contains: Int
+  eq: Int
+  ge: Int
+  gt: Int
+  le: Int
+  lt: Int
+  ne: Int
+  notContains: Int
+}
+
+input TableStringFilterInput {
+  beginsWith: String
+  between: [String]
+  contains: String
+  eq: String
+  ge: String
+  gt: String
+  le: String
+  lt: String
+  ne: String
+  notContains: String
+}
+
+input TableTodoFilterInput {
+  id: TableIDFilterInput
+  todo: TableStringFilterInput
+}
+
+input UpdateTodoInput {
+  id: ID!
+  todo: String
+}
