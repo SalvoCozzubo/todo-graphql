@@ -1,0 +1,11 @@
+{
+  "version": "2018-05-29",
+  "statements": [
+    "UPDATE `todo` SET text = :TEXT WHERE ID = :ID",
+    "SELECT * FROM `todo` WHERE ID = :ID"
+  ],
+  "variableMap": {
+    ":ID": $utils.toJson($ctx.args.input.ID),
+    ":TEXT": $utils.toJson($ctx.args.input.text)
+  }
+}

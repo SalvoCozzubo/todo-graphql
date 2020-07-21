@@ -3,8 +3,8 @@
 #if($offset != $null)
   #set($offset = $ctx.args.page)
 #end
-#set($offset=$offset*$limit)
 #set($limit=10)
+#set($offset=$offset*$limit)
 {
   "version": "2018-05-29",
   "statements": [

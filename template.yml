@@ -19,6 +19,24 @@ Resources:
       DataSourceName: !GetAtt TodoDataSource.Name
       ResponseMappingTemplateS3Location: ./graphql/listTodos/responseMapping.vtl
       RequestMappingTemplateS3Location: ./graphql/listTodos/requestMapping.vtl
+  GraphQLResolverGetTodo:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !GetAtt GraphQLEndpoint.ApiId
+      FieldName: "getTodo"
+      TypeName: "Query"
+      DataSourceName: !GetAtt TodoDataSource.Name
+      ResponseMappingTemplateS3Location: ./graphql/getTodo/responseMapping.vtl
+      RequestMappingTemplateS3Location: ./graphql/getTodo/requestMapping.vtl
+  GraphQLResolverUpdateTodo:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !GetAtt GraphQLEndpoint.ApiId
+      FieldName: "updateTodo"
+      TypeName: "Mutation"
+      DataSourceName: !GetAtt TodoDataSource.Name
+      ResponseMappingTemplateS3Location: ./graphql/updateTodo/responseMapping.vtl
+      RequestMappingTemplateS3Location: ./graphql/updateTodo/requestMapping.vtl
   GraphQLSchema:
     Type: AWS::AppSync::GraphQLSchema
     Properties:

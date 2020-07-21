@@ -1,0 +1,10 @@
+#set($id = $ctx.args.id)
+{
+  "version": "2018-05-29",
+  "statements": [
+    "SELECT * FROM `todo` WHERE ID = :ID"
+  ],
+  "variableMap": {
+    ":ID": "$id"
+  }
+}
