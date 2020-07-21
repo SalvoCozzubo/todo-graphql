@@ -1,14 +1,12 @@
+#set($id=$utils.autoId())
 {
-  "version": "2017-02-28",
-  "operation": "PutItem",
-  "key": {
-    "id": $util.dynamodb.toDynamoDBJson($util.autoId()),
-  },
-  "attributeValues": $util.dynamodb.toMapValuesJson($ctx.args.input),
-  "condition": {
-    "expression": "attribute_not_exists(#id)",
-    "expressionNames": {
-      "#id": "id",
-    },
-  },
+  "version": "2018-05-29",
+  "statements": [
+    "INSERT INTO `todo` (ID, text) VALUES (:ID, :TEXT)",
+    "SELECT * FROM `todo` WHERE ID = :ID"
+  ],
+  "variableMap": {
+    ":ID": "$id",
+    ":TEXT": $utils.toJson($ctx.args.input.text)
+  }
 }

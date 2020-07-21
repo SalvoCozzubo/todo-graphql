@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect, useState } from 'react';
 import AddTodoForm from './AddTodoForm';
 import ListTodoView from './ListTodo';
 import ListTodoQuery from './queries/ListTodo';
@@ -22,25 +22,33 @@ const reducer = (state, action) => {
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, { todos: [] });
+  const [errorMessage, setErrorMessage] = useState('');
 
   const createTodo = async (todo) => {
     return await API.graphql(
       graphqlOperation(CreateTodoMutation, { createtodoinput: todo }));
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     const listTodo = async () => {
-      const todosRaw = await API.graphql(graphqlOperation(ListTodoQuery));
-      const todos = todosRaw.data.listTodos ? todosRaw.data.listTodos.items : [];
+      let todos = [];
+      try {
+        const todosRaw = await API.graphql(graphqlOperation(ListTodoQuery));
+        todos = todosRaw.data.listTodos.items ? todosRaw.data.listTodos.items : [];
+      } catch (error) {
+        setErrorMessage("Si è verificato un errore. Riprova.");
+        console.error(error);
+      }
       dispatch({ type: 'LOAD', payload: todos });
     };
-    
+
     listTodo();
   }, []);
 
   return (
     <>
       <h1>TODO</h1>
+      {errorMessage.length > 0 && <div style={{ color: 'red' }}>{errorMessage}</div>}
       <AddTodoForm dispatch={dispatch} createTodo={createTodo} />
       <ListTodoView todos={state.todos} />
     </>

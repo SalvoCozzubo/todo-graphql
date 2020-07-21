@@ -1,12 +1,6 @@
 Transform: AWS::Serverless-2016-10-31
 
 Resources:
-  TodoDynamoDb:
-    Type: AWS::Serverless::SimpleTable
-    Properties:
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
   GraphQLResolverCreateTodo:
     Type: AWS::AppSync::Resolver
     Properties:
@@ -34,12 +28,16 @@ Resources:
     Type: AWS::AppSync::DataSource
     Properties:
       ApiId: !GetAtt GraphQLEndpoint.ApiId
-      Type: AMAZON_DYNAMODB
-      Name: TodoDataSource
       ServiceRoleArn: !GetAtt TodoDataSourceServiceRole.Arn
-      DynamoDBConfig:
-        AwsRegion: !Ref AWS::Region
-        TableName: !Ref TodoDynamoDb
+      Type: RELATIONAL_DATABASE
+      RelationalDatabaseConfig:
+        RdsHttpEndpointConfig:
+          AwsRegion: !Ref AWS::Region
+          DbClusterIdentifier: arn:aws:rds:eu-west-1:031521953183:cluster:db-todos
+          AwsSecretStoreArn: arn:aws:secretsmanager:eu-west-1:031521953183:secret:todo-rds-secret-HpAxoN
+          DatabaseName: todosdb
+        RelationalDatabaseSourceType: RDS_HTTP_ENDPOINT
+      Name: TodoDataSource
   GraphQLApiKey:
     Type: AWS::AppSync::ApiKey
     Properties:
@@ -63,24 +61,27 @@ Resources:
               - "sts:AssumeRole"
       Policies:
         -
-          PolicyName: DynamoDbWriteRead
+          PolicyName: RdsAccess
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
               -
                 Effect: "Allow"
                 Action:
-                  - "dynamodb:BatchGetItem"
-                  - "dynamodb:BatchWriteItem"
-                  - "dynamodb:PutItem"
-                  - "dynamodb:DeleteItem"
-                  - "dynamodb:GetItem"
-                  - "dynamodb:Scan"
-                  - "dynamodb:Query"
-                  - "dynamodb:UpdateItem"
+                  - rds-data:ExecuteSql
+                  - rds-data:ExecuteStatement
+                  - rds-data:GetItems
+                  - rds-data:InsertItems
+                  - rds-data:UpdateItems
                 Resource:
-                  - !GetAtt TodoDynamoDb.Arn
-                  - !Join [ "", [!GetAtt TodoDynamoDb.Arn, "/*"]]
+                  - "arn:aws:rds:eu-west-1:031521953183:cluster:db-todos"
+                  - "arn:aws:rds:eu-west-1:031521953183:cluster:db-todos:*"
+              -
+                Effect: "Allow"
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource:
+                  - "arn:aws:secretsmanager:eu-west-1:031521953183:secret:todo-rds-secret-HpAxoN"
 Outputs:
   GraphQLUrl:
     Value: !GetAtt GraphQLEndpoint.GraphQLUrl

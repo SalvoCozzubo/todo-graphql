@@ -4,8 +4,8 @@ const ListTodoView = gql`
   query listTodos {
     listTodos {
       items {
-        id
-        todo
+        ID
+        text
       }
     }
   }

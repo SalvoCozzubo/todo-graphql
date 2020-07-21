@@ -5,7 +5,7 @@ const ListTodoView = (props) => {
     <div>
       {
         props.todos.map((item) => (
-          <div key={item.id}>{item.todo}</div>
+          <div key={item.ID}>{item.text}</div>
         ))
       }
     </div>
