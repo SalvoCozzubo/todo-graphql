@@ -1,6 +1,15 @@
 Transform: AWS::Serverless-2016-10-31
 
 Resources:
+  GraphQLResolverDeleteTodo:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !GetAtt GraphQLEndpoint.ApiId
+      FieldName: "deleteTodo"
+      TypeName: "Mutation"
+      DataSourceName: !GetAtt TodoDataSource.Name
+      ResponseMappingTemplateS3Location: ./graphql/deleteTodo/responseMapping.vtl
+      RequestMappingTemplateS3Location: ./graphql/deleteTodo/requestMapping.vtl
   GraphQLResolverCreateTodo:
     Type: AWS::AppSync::Resolver
     Properties:

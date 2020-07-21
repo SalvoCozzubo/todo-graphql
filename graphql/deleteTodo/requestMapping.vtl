@@ -1,0 +1,10 @@
+#set($id = $utils.toJson($ctx.args.input.ID))
+{
+  "version": "2018-05-29",
+  "statements": [
+    "DELETE FROM `todo` WHERE ID = :ID"
+  ],
+  "variableMap": {
+    ":ID": $id
+  }
+}

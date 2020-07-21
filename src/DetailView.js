@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import GetTodoQuery from './queries/GetTodo';
 import UpdateTodoMutation from './queries/UpdateTodo';
+import DeleteTodoMutation from './queries/DeleteTodo';
 
 const DetailView = () => {
   const [currentTodo, setCurrentTodo] = useState(undefined);
@@ -36,6 +37,14 @@ const DetailView = () => {
     console.log('t', todoRaw);
   };
 
+  const deleteTodo = async () => {
+    const { ID } = currentTodo;
+
+    const todoRaw = await API.graphql(
+      graphqlOperation(DeleteTodoMutation,
+        { deletetodoinput: { ID }}));
+  };
+
   return (
     <div>
       <input
@@ -59,6 +68,10 @@ const DetailView = () => {
             <div>
               <button
                 onClick={updateTodo}>Update</button>
+            </div>
+            <div>
+              <button
+                onClick={deleteTodo}>Delete</button>
             </div>
           </>
       }
