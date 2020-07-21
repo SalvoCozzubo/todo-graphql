@@ -1,6 +1,18 @@
+#set($page=$ctx.args.page)
+#set($offset = 0)
+#if($offset != $null)
+  #set($offset = $ctx.args.page)
+#end
+#set($offset=$offset*$limit)
+#set($limit=10)
 {
   "version": "2018-05-29",
   "statements": [
-    "SELECT * FROM `todo`"
+    "SELECT COUNT(ID) as num FROM `todo`",
+    "SELECT * FROM `todo` LIMIT :OFFSET , :LIMIT"
   ],
+  "variableMap": {
+    ":OFFSET": $offset,
+    ":LIMIT": $limit
+  }
 }

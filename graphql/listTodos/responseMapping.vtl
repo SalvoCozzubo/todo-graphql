@@ -2,4 +2,8 @@
     $utils.error($ctx.error.message, $ctx.error.type)
 #end
 
-{"items": $utils.toJson($utils.rds.toJsonObject($ctx.result)[0]) }
+#set($totalRecords = $utils.toJson($utils.rds.toJsonObject($ctx.result)[0][0].num))
+#set($Integer = 0)
+#set($totalPages=($Integer.parseInt($totalRecords) / 10) + 1)
+#set($items = $utils.toJson($utils.rds.toJsonObject($ctx.result)[1]))
+{"items": $items, "totalPages": $totalPages, "totalRecords": $totalRecords }
