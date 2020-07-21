@@ -7,7 +7,7 @@ type Mutation {
 
 type Query {
   getTodo(id: ID!): Todo
-  listTodos: TodoConnection
+  listTodos(page: Int): TodoConnection
 }
 
 type Todo {
@@ -19,7 +19,8 @@ type Todo {
 
 type TodoConnection {
   items: [Todo]
-  lastID: String
+  totalPages: Int
+  totalRecords: Int
 }
 
 input CreateTodoInput {
